@@ -1,0 +1,7 @@
+mysql-connector-python
+dnspython
+pandas
+numpy
+ensure
+
+-e .
