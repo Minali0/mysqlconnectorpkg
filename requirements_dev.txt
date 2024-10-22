@@ -3,6 +3,7 @@ dnspython
 pandas
 numpy
 ensure
+tox
 
 # dev requirements -
 
