@@ -57,17 +57,16 @@ pip install mysql-crud-automation
 ```
 
 ```bash
-import mysql.connector
+from mysql_connect import mysql_crud
 ```
 
 ```bash
-host="hostname",
-user="username",
-password="<password>",
-```
-
-```bash
-mysql_connector = mysql_operation(host,user,password)
+mysql_connector = mysql_crud.mysql_operation(
+    host="hostname",
+    user="username",
+    password="password",
+    database_name = 'database_name'
+)
 ```
 
 # CRUD Operation on MySQL :-
