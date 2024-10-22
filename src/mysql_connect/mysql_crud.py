@@ -4,6 +4,7 @@ import pandas as pd
 import json
 from typing import Any
 from ensure import ensure_annotations
+from typing import Optional
 
 
 class mysql_operation:
@@ -67,7 +68,7 @@ class mysql_operation:
             connection.close()
             
     @ensure_annotations 
-    def insert_record(self, record: dict, table_name: str):
+    def insert_record(self, record: dict, table_name: Optional[str] = None):
         """Insert one or many records into the specified MySQL table."""
         connection = self.create_connection()
         cursor = connection.cursor()
@@ -107,7 +108,7 @@ class mysql_operation:
         connection.close()
 
     @ensure_annotations 
-    def bulk_insert(self, datafile: str, table_name: str, unique_field: str = None):
+    def bulk_insert(self, datafile: str, table_name: Optional[str] = None, unique_field: Optional[str] = None):
         """Bulk insert records from a CSV or Excel file."""
         connection = self.create_connection()
         cursor = connection.cursor()
@@ -141,7 +142,7 @@ class mysql_operation:
         connection.close()
 
     @ensure_annotations 
-    def find(self, query: dict = {}, table_name: str = None):
+    def find(self, query: dict = {}, table_name: Optional[str] = None):
         """Retrieve records from the specified MySQL table based on the query."""
         connection = self.create_connection()
         cursor = connection.cursor(dictionary=True)  # This will return results as dictionaries
@@ -165,7 +166,7 @@ class mysql_operation:
         return results
 
     @ensure_annotations 
-    def update(self, table_name: str, query: dict, new_values: dict):
+    def update(self, query: dict, new_values: dict,table_name: Optional[str] = None):
         """Update records in the MySQL table based on the query and new values."""
         connection = self.create_connection()
         cursor = connection.cursor()
@@ -189,7 +190,7 @@ class mysql_operation:
 
             print(f"Record(s) updated in {table_name} where {query}.")
             
-        except mysql.Error as e:  # Make sure to replace `Error` with the relevant exception class
+        except Error as e:  # Make sure to replace `Error` with the relevant exception class
             print(f"Error updating record: {e}")
         
         finally:
@@ -198,7 +199,7 @@ class mysql_operation:
 
 
     @ensure_annotations 
-    def delete(self, table_name: str, query: dict):
+    def delete(self, query: dict,table_name: Optional[str] = None):
         """Delete records from the MySQL table based on the query."""
         connection = self.create_connection()
         cursor = connection.cursor()
@@ -219,10 +220,9 @@ class mysql_operation:
 
             print(f"Record(s) deleted from {table_name} where {query}.")
         
-        except mysql.Error as e:  # Use the appropriate MySQL error handling class
+        except Error as e:  # Use the appropriate MySQL error handling class
             print(f"Error deleting record: {e}")
         
         finally:
             cursor.close()
             connection.close()
-
