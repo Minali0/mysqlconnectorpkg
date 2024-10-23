@@ -50,7 +50,7 @@ class mysql_operation:
             connection.close()
 
     @ensure_annotations 
-    def create_table(self, create_table_sql: str,database_name=Optional[str] = None):
+    def create_table(self, create_table_sql: str,database_name:Optional[str] = None):
         """Create a table in the specified MySQL database using a SQL query."""
         connection = None
         cursor = None
@@ -130,7 +130,6 @@ class mysql_operation:
     @ensure_annotations 
     def bulk_insert(self, datafile: str, table_name: Optional[str] = None, database_name:Optional[str] = None,unique_field: Optional[str] = None):
         """Bulk insert records from a CSV or Excel file."""
-        # connection = self.create_connection()
         connection = mysql.connector.connect(
         host=self.host,
         user=self.user,
@@ -154,7 +153,8 @@ class mysql_operation:
                 select_query = f"SELECT COUNT(*) FROM {table_name} WHERE {unique_field} = %s"
                 cursor.execute(select_query, (record[unique_field],))
                 result = cursor.fetchone()
-                if result[0] == 0:
+                
+                if isinstance(result, tuple) and result[0] == 0:
                     sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
                     cursor.execute(sql, tuple(record.values()))
                 else:
@@ -171,7 +171,6 @@ class mysql_operation:
     @ensure_annotations 
     def find(self, query: dict = {}, table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Retrieve records from the specified MySQL table based on the query."""
-        # connection = self.create_connection()
         connection = mysql.connector.connect(
         host=self.host,
         user=self.user,
@@ -202,7 +201,6 @@ class mysql_operation:
     @ensure_annotations 
     def update(self, query: dict={}, new_values: dict={},table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Update records in the MySQL table based on the query and new values."""
-        # connection = self.create_connection()
         connection = mysql.connector.connect(
         host=self.host,
         user=self.user,
@@ -231,7 +229,7 @@ class mysql_operation:
 
             print(f"Record(s) updated in {table_name} where {query}.")
             
-        except mysql.Error as e:  # Make sure to replace `Error` with the relevant exception class
+        except Error as e:  # Make sure to replace `Error` with the relevant exception class
             print(f"Error updating record: {e}")
         
         finally:
@@ -241,7 +239,6 @@ class mysql_operation:
     @ensure_annotations 
     def delete(self,query: dict={},table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Delete records from the MySQL table based on the query."""
-        # connection = self.create_connection()
         connection = mysql.connector.connect(
         host=self.host,
         user=self.user,
@@ -266,7 +263,7 @@ class mysql_operation:
 
             print(f"Record(s) deleted from {table_name} where {query}.")
         
-        except mysql.Error as e:  # Use the appropriate MySQL error handling class
+        except Error as e:  # Use the appropriate MySQL error handling class
             print(f"Error deleting record: {e}")
         
         finally:
