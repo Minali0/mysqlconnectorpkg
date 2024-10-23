@@ -9,11 +9,10 @@ from typing import Optional
 
 class mysql_operation:
     @ensure_annotations 
-    def __init__(self, host: str, user: str, password: str, database_name: str):
+    def __init__(self, host: str, user: str, password: str):
         self.host = host
         self.user = user
         self.password = password
-        self.database_name = database_name
     
     @ensure_annotations 
     def create_connection(self):
@@ -23,7 +22,6 @@ class mysql_operation:
                 host=self.host,
                 user=self.user,
                 password=self.password,
-                database=self.database_name
             )
             if connection.is_connected():
                 print("Connected to MySQL database")
@@ -52,25 +50,47 @@ class mysql_operation:
             connection.close()
 
     @ensure_annotations 
-    def create_table(self, create_table_sql: str):
-        """Create a table in the MySQL database using a SQL query."""
-        connection = self.create_connection()
-        cursor = connection.cursor()
+    def create_table(self, create_table_sql: str,database_name=Optional[str] = None):
+        """Create a table in the specified MySQL database using a SQL query."""
+        connection = None
+        cursor = None
+        
         try:
+            # Connect to the MySQL server (specify the database now)
+            connection = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password,
+                database=database_name  # Now include the database name
+            )
+            if connection.is_connected():
+                print(f"Connected to MySQL database: {database_name}")
+
+            cursor = connection.cursor()
             cursor.execute(create_table_sql)
             print("Table created successfully.")
             return True
+            
         except Error as e:
             print(f"Error creating table: {e}")
             return None 
+            
         finally:
-            cursor.close()
-            connection.close()
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+            print("MySQL connection is closed.")
             
     @ensure_annotations 
-    def insert_record(self, record: dict, table_name: Optional[str] = None):
+    def insert_record(self, record: dict={}, table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Insert one or many records into the specified MySQL table."""
-        connection = self.create_connection()
+        connection = mysql.connector.connect(
+        host=self.host,
+        user=self.user,
+        password=self.password,
+        database=database_name  # Specify the database here
+    )
         cursor = connection.cursor()
 
         if isinstance(record, list):
@@ -108,9 +128,16 @@ class mysql_operation:
         connection.close()
 
     @ensure_annotations 
-    def bulk_insert(self, datafile: str, table_name: Optional[str] = None, unique_field: Optional[str] = None):
+    def bulk_insert(self, datafile: str, table_name: Optional[str] = None, database_name:Optional[str] = None,unique_field: Optional[str] = None):
         """Bulk insert records from a CSV or Excel file."""
-        connection = self.create_connection()
+        # connection = self.create_connection()
+        connection = mysql.connector.connect(
+        host=self.host,
+        user=self.user,
+        password=self.password,
+        database=database_name  # Specify the database here
+        )
+        
         cursor = connection.cursor()
 
         if datafile.endswith('.csv'):
@@ -142,9 +169,15 @@ class mysql_operation:
         connection.close()
 
     @ensure_annotations 
-    def find(self, query: dict = {}, table_name: Optional[str] = None):
+    def find(self, query: dict = {}, table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Retrieve records from the specified MySQL table based on the query."""
-        connection = self.create_connection()
+        # connection = self.create_connection()
+        connection = mysql.connector.connect(
+        host=self.host,
+        user=self.user,
+        password=self.password,
+        database=database_name  # Specify the database here
+    )
         cursor = connection.cursor(dictionary=True)  # This will return results as dictionaries
 
         # If no query is specified, fetch all records
@@ -165,10 +198,18 @@ class mysql_operation:
 
         return results
 
+
     @ensure_annotations 
-    def update(self, query: dict, new_values: dict,table_name: Optional[str] = None):
+    def update(self, query: dict={}, new_values: dict={},table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Update records in the MySQL table based on the query and new values."""
-        connection = self.create_connection()
+        # connection = self.create_connection()
+        connection = mysql.connector.connect(
+        host=self.host,
+        user=self.user,
+        password=self.password,
+        database=database_name  # Specify the database here
+        )
+        
         cursor = connection.cursor()
 
         try:
@@ -190,18 +231,23 @@ class mysql_operation:
 
             print(f"Record(s) updated in {table_name} where {query}.")
             
-        except Error as e:  # Make sure to replace `Error` with the relevant exception class
+        except mysql.Error as e:  # Make sure to replace `Error` with the relevant exception class
             print(f"Error updating record: {e}")
         
         finally:
             cursor.close()
             connection.close()
 
-
     @ensure_annotations 
-    def delete(self, query: dict,table_name: Optional[str] = None):
+    def delete(self,query: dict={},table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Delete records from the MySQL table based on the query."""
-        connection = self.create_connection()
+        # connection = self.create_connection()
+        connection = mysql.connector.connect(
+        host=self.host,
+        user=self.user,
+        password=self.password,
+        database=database_name  # Specify the database here
+        )
         cursor = connection.cursor()
 
         try:
@@ -220,7 +266,7 @@ class mysql_operation:
 
             print(f"Record(s) deleted from {table_name} where {query}.")
         
-        except Error as e:  # Use the appropriate MySQL error handling class
+        except mysql.Error as e:  # Use the appropriate MySQL error handling class
             print(f"Error deleting record: {e}")
         
         finally:

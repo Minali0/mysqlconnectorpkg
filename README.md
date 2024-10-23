@@ -64,8 +64,7 @@ from mysql_connect import mysql_crud
 mysql_connector = mysql_crud.mysql_operation(
     host="hostname",
     user="username",
-    password="password",
-    database_name = 'database_name'
+    password="password"
 )
 ```
 
@@ -73,43 +72,55 @@ mysql_connector = mysql_crud.mysql_operation(
 
 ## How to run :-
 
-### 1. create database
+### 1. create connection 
 ```bash
-mysql_connector.create_database()
+mysql_connector.create_connection()
 ```
 
-### 2. create table
+### 2. create database
 ```bash
-mysql_connector.create_table('<table_name>')
+database_name = "<database_name>"
+mysql_connector.create_database(database_name)
+```
+
+### 3. create table
+```bash
+create_table_sql = """
+CREATE TABLE <table_name> (
+    name VARCHAR(100) NOT NULL,   
+    age VARCHAR(100) NOT NULL
+);
+"""
+mysql_connector.create_table(database_name,create_table_sql)
 ```
 
 ### 3. insert record 
 ```bash
-mysql_connector.insert_record(table_name="<table_name>", record=record:dict)
+mysql_connector.insert_record(table_name="<table_name>", database_name = '<database_name>',record=record:dict)
 ```
 
 ### 4. insert many record 
 ```bash
-mysql_connector.insert_record(table_name="<table_name>",record=[record:dict])
+mysql_connector.insert_record(table_name="<table_name>",database_name = '<database_name>',record=[record:dict])
 ```
 
 ### 5. bulk insert record 
 - in this datafile is in .csv or .xlsx file 
 ```bash
-mysql_connector.bulk_insert ( datafile= "<file_path>", table_name="<table_name>", unique_field: str = None)
+mysql_connector.bulk_insert ( datafile= "<file_path>", table_name="<table_name>",database_name='<database_name>', unique_field: str = None)
 ```
 
 ### 6. find query  
 ```bash
-mysql_connector.find(query: dict = {}, table_name="<table_name>")
+mysql_connector.find(query:dict = {}, table_name="<table_name>",database_name='<database_name>')
 ```
 
 ### 7. update query
 ```bash
-mysql_connector.update(query: dict, table_name="<table_name>", new_values: dict)
+mysql_connector.update(query: dict={},new_values: dict={},table_name="<table_name>",database_name='<database_name>')
 ```
 
 ### 8. delete query
 ```bash
-mysql_connector.delete(query: dict, table_name="<table_name>")
+mysql_connector.delete(query: dict={}, table_name="<table_name>",database_name='<database_name>')
 ```
