@@ -1,5 +1,5 @@
 
-# requirements_dev.txt we use for the testing
+# requirements_dev.txt for the testing
 It makes it easier to install and manage dependencies for development and testing, separate from the dependencies required for production.
 
 # difference between requirements_dev.txt and requirements.txt
@@ -10,7 +10,7 @@ requirements.txt is used to specify the dependencies required to run the product
 We use if for the testing in the python package testing against different version of the python 
 
 ## how tox works tox enviornment creation
-1. Install depedencies and packages 
+1. Install dependencies and packages 
 2. Run commands
 3. Its a combination of the (virtualenvwrapper and makefile)
 4. It creates a .tox
@@ -50,17 +50,16 @@ In summary, setup.cfg is used by setup tools to configure the packaging and inst
 
 # How to use the package :-
 
-### STEPS:-
+### Installation :- 
 
 ```bash
 pip install mysql-crud-automation
 ```
 
-```bash
-from mysql_connect import mysql_crud
-```
+### Usage :-
 
 ```bash
+from mysql_connect import mysql_crud
 mysql_connector = mysql_crud.mysql_operation(
     host="hostname",
     user="username",
@@ -70,57 +69,89 @@ mysql_connector = mysql_crud.mysql_operation(
 
 # CRUD Operation on MySQL :-
 
-## How to run :-
-
 ### 1. create connection 
+
 ```bash
 mysql_connector.create_connection()
 ```
 
 ### 2. create database
+
 ```bash
-database_name = "<database_name>"
-mysql_connector.create_database(database_name)
+mysql_connector.create_database(database_name ="<database_name>")
 ```
 
 ### 3. create table
+
 ```bash
 create_table_sql = """
 CREATE TABLE <table_name> (
     name VARCHAR(100) NOT NULL,   
     age VARCHAR(100) NOT NULL
 );"""
-mysql_connector.create_table(database_name,create_table_sql)
+mysql_connector.create_table(database_name, create_table_sql)
 ```
 
 ### 4. insert record 
+
 ```bash
-mysql_connector.insert_record(table_name="<table_name>", database_name = '<database_name>',record=record:dict)
+mysql_connector.insert_record(
+    table_name="<table_name>", 
+    database_name='<database_name>',
+    record=record:dict
+)
 ```
 
-### 5. insert many record 
+### 5. insert multiple record 
+
 ```bash
-mysql_connector.insert_record(table_name="<table_name>",database_name = '<database_name>',record=[record:dict])
+mysql_connector.insert_record(
+    table_name="<table_name>", 
+    database_name='<database_name>',
+    record=[record:dict]
+)
 ```
 
 ### 6. bulk insert record 
+
 - in this datafile is in .csv or .xlsx file 
 
 ```bash
-mysql_connector.bulk_insert ( datafile= "<file_path>", table_name="<table_name>",database_name='<database_name>', unique_field: str = None)
+mysql_connector.bulk_insert(
+    datafile="<file_path>", 
+    table_name="<table_name>",
+    database_name='<database_name>', 
+    unique_field: str = None
+)
 ```
-
+ 
 ### 7. find query  
+
 ```bash
-mysql_connector.find(query:dict = {}, table_name="<table_name>",database_name='<database_name>')
+mysql_connector.find(
+    query:dict = {}, 
+    table_name="<table_name>", 
+    database_name='<database_name>'
+)
 ```
 
 ### 8. update query
+
 ```bash
-mysql_connector.update(query: dict={},new_values: dict={},table_name="<table_name>",database_name='<database_name>')
+mysql_connector.update(
+    query: dict={}, 
+    new_values: dict={}, 
+    table_name="<table_name>", 
+    database_name='<database_name>'
+)
 ```
 
 ### 9. delete query
+
 ```bash
-mysql_connector.delete(query: dict={}, table_name="<table_name>",database_name='<database_name>')
+mysql_connector.delete(
+    query: dict={}, 
+    table_name="<table_name>", 
+    database_name='<database_name>'
+)
 ```
