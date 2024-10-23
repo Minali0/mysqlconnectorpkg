@@ -89,38 +89,38 @@ create_table_sql = """
 CREATE TABLE <table_name> (
     name VARCHAR(100) NOT NULL,   
     age VARCHAR(100) NOT NULL
-);
-"""
+);"""
 mysql_connector.create_table(database_name,create_table_sql)
 ```
 
-### 3. insert record 
+### 4. insert record 
 ```bash
 mysql_connector.insert_record(table_name="<table_name>", database_name = '<database_name>',record=record:dict)
 ```
 
-### 4. insert many record 
+### 5. insert many record 
 ```bash
 mysql_connector.insert_record(table_name="<table_name>",database_name = '<database_name>',record=[record:dict])
 ```
 
-### 5. bulk insert record 
+### 6. bulk insert record 
 - in this datafile is in .csv or .xlsx file 
+
 ```bash
 mysql_connector.bulk_insert ( datafile= "<file_path>", table_name="<table_name>",database_name='<database_name>', unique_field: str = None)
 ```
 
-### 6. find query  
+### 7. find query  
 ```bash
 mysql_connector.find(query:dict = {}, table_name="<table_name>",database_name='<database_name>')
 ```
 
-### 7. update query
+### 8. update query
 ```bash
 mysql_connector.update(query: dict={},new_values: dict={},table_name="<table_name>",database_name='<database_name>')
 ```
 
-### 8. delete query
+### 9. delete query
 ```bash
 mysql_connector.delete(query: dict={}, table_name="<table_name>",database_name='<database_name>')
 ```
