@@ -2,9 +2,8 @@ import mysql.connector
 from mysql.connector import Error
 import pandas as pd
 import json
-from typing import Any
 from ensure import ensure_annotations
-from typing import Optional
+from typing import Any , Optional , List, Dict , Union
 
 
 class mysql_operation:
@@ -31,24 +30,38 @@ class mysql_operation:
             return None
 
     @ensure_annotations 
-    def create_database(self):
+    def create_database(self,database_name:Optional[str] = None):
         """Create a MySQL database if it doesn't exist."""
-        connection = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password
-        )
-        cursor = connection.cursor()
+        connection = None
+        cursor = None
+        
         try:
-            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {self.database_name}")
-            print(f"Database '{self.database_name}' created or already exists.")
-            return self.database_name
+            # Connect to the MySQL server (no specific database mentioned yet)
+            connection = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                password=self.password
+            )
+            if connection.is_connected():
+                print("Connected to MySQL server")
+
+            cursor = connection.cursor()
+
+            # Create the database if it doesn't exist
+            cursor.execute(f"CREATE DATABASE IF NOT EXISTS {database_name}")
+            print(f"Database '{database_name}' created or already exists.")
+
         except Error as e:
             print(f"Error creating database: {e}")
-        finally:
-            cursor.close()
-            connection.close()
 
+        finally:
+            # Close cursor and connection
+            if cursor:
+                cursor.close()
+            if connection:
+                connection.close()
+            print("MySQL connection is closed.")
+            
     @ensure_annotations 
     def create_table(self, create_table_sql: str,database_name:Optional[str] = None):
         """Create a table in the specified MySQL database using a SQL query."""
@@ -83,7 +96,7 @@ class mysql_operation:
             print("MySQL connection is closed.")
             
     @ensure_annotations 
-    def insert_record(self, record: dict={}, table_name: Optional[str] = None,database_name:Optional[str] = None):
+    def insert_record(self,record: Union[dict, List[dict]] = {},table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Insert one or many records into the specified MySQL table."""
         connection = mysql.connector.connect(
         host=self.host,

@@ -89,27 +89,27 @@ CREATE TABLE <table_name> (
     name VARCHAR(100) NOT NULL,   
     age VARCHAR(100) NOT NULL
 );"""
-mysql_connector.create_table(database_name, create_table_sql)
+mysql_connector.create_table(create_table_sql,database_name)
 ```
 
 ### 4. insert record 
 
 ```bash
 mysql_connector.insert_record(
+    record=record:dict,
     table_name="<table_name>", 
-    database_name='<database_name>',
-    record=record:dict
-)
+    database_name='<database_name>'
+    )
 ```
 
 ### 5. insert multiple record 
 
 ```bash
 mysql_connector.insert_record(
+    record=[record:dict],
     table_name="<table_name>", 
     database_name='<database_name>',
-    record=[record:dict]
-)
+    )
 ```
 
 ### 6. bulk insert record 
@@ -121,7 +121,7 @@ mysql_connector.bulk_insert(
     datafile="<file_path>", 
     table_name="<table_name>",
     database_name='<database_name>', 
-    unique_field: str = None
+    unique_field=<'column_name'>
 )
 ```
  
