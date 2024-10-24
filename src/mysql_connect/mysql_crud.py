@@ -96,7 +96,7 @@ class mysql_operation:
             print("MySQL connection is closed.")
             
     @ensure_annotations 
-    def insert_record(self,record: Union[dict, List[dict]] = {},table_name: Optional[str] = None,database_name:Optional[str] = None):
+    def insert_record(self,record: Union[dict, List[dict]] = [],table_name: Optional[str] = None,database_name:Optional[str] = None):
         """Insert one or many records into the specified MySQL table."""
         connection = mysql.connector.connect(
         host=self.host,
