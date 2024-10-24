@@ -95,7 +95,7 @@ mysql_connector.create_table(create_table_sql,database_name)
 ### 4. insert record 
 
 ```bash
-mysql_connector.insert_record(
+mysql_connector.insert_single_record(
     record=record:dict,
     table_name="<table_name>", 
     database_name='<database_name>'
@@ -105,10 +105,10 @@ mysql_connector.insert_record(
 ### 5. insert multiple record 
 
 ```bash
-mysql_connector.insert_record(
-    record=[record:dict],
-    table_name="<table_name>", 
-    database_name='<database_name>',
+mysql_connector.insert_multiple_records(
+    record= [record:dict],
+    table_name= "<table_name>", 
+    database_name= '<database_name>'
     )
 ```
 
@@ -130,6 +130,14 @@ mysql_connector.bulk_insert(
 ```bash
 mysql_connector.find(
     query:dict = {}, 
+    table_name="<table_name>", 
+    database_name='<database_name>'
+)
+```
+### 8. find all query in the table 
+
+```bash
+mysql_connector.find(
     table_name="<table_name>", 
     database_name='<database_name>'
 )

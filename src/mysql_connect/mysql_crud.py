@@ -96,47 +96,66 @@ class mysql_operation:
             print("MySQL connection is closed.")
             
     @ensure_annotations 
-    def insert_record(self,record: Union[dict, List[dict]] = [],table_name: Optional[str] = None,database_name:Optional[str] = None):
-        """Insert one or many records into the specified MySQL table."""
+    def insert_single_record(self, record: dict,table_name: Optional[str] = None,database_name:Optional[str] = None):
+        """Insert a single record into the specified MySQL table."""
+        # Connect to MySQL
         connection = mysql.connector.connect(
-        host=self.host,
-        user=self.user,
-        password=self.password,
-        database=database_name  # Specify the database here
-    )
+            host=self.host,
+            user=self.user,
+            password=self.password,
+            database=database_name
+        )
         cursor = connection.cursor()
 
-        if isinstance(record, list):
-            # Ensure all items in the list are dictionaries
-            for data in record:
-                if not isinstance(data, dict):
-                    raise TypeError("Each record in the list must be a dictionary")
+        # Prepare SQL for inserting a single record
+        columns = ', '.join(record.keys())
+        placeholders = ', '.join(['%s'] * len(record))
+        sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
-            # Prepare SQL for inserting multiple records
-            columns = ', '.join(record[0].keys())
-            placeholders = ', '.join(['%s'] * len(record[0]))
-            sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+        # Extract the values as a tuple
+        values = tuple(record.values())
 
-            # Extract the values for each record as tuples
-            values_list: List[Tuple] = [tuple(data.values()) for data in record]
-            cursor.executemany(sql, values_list)
-            
-        elif isinstance(record, dict):
-            # Prepare SQL for inserting a single record
-            columns = ', '.join(record.keys())
-            placeholders = ', '.join(['%s'] * len(record))
-            sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
-
-            # Extract the values as a tuple
-            single_value_tuple: Tuple = tuple(record.values())  # This is now explicitly a Tuple
-            cursor.execute(sql, single_value_tuple)
-        else:
-            raise TypeError("Record must be a dictionary or a list of dictionaries")
+        cursor.execute(sql, values)
 
         # Commit the transaction
         connection.commit()
-        print(f"Record(s) inserted into {table_name}.")
-        
+        print(f"Single record inserted into {table_name}.")
+
+        # Close the cursor and connection
+        cursor.close()
+        connection.close()
+    
+    @ensure_annotations 
+    def insert_multiple_records(self, records: List[dict], table_name: Optional[str] = None,database_name:Optional[str] = None):
+        """Insert multiple records into the specified MySQL table."""
+        if not records:
+            print("No records provided to insert.")
+            return
+
+        # Connect to MySQL
+        connection = mysql.connector.connect(
+            host=self.host,
+            user=self.user,
+            password=self.password,
+            database=database_name
+        )
+        cursor = connection.cursor()
+
+        # Prepare SQL for inserting multiple records
+        columns = ', '.join(records[0].keys())
+        placeholders = ', '.join(['%s'] * len(records[0]))
+        sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+
+        # Extract the values for each record as tuples
+        values_list = [tuple(record.values()) for record in records]
+
+        cursor.executemany(sql, values_list)
+
+        # Commit the transaction
+        connection.commit()
+        print(f"Multiple records inserted into {table_name}.")
+
+        # Close the cursor and connection
         cursor.close()
         connection.close()
 
