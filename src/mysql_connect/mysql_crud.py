@@ -3,7 +3,7 @@ from mysql.connector import Error
 import pandas as pd
 import json
 from ensure import ensure_annotations
-from typing import Any , Optional , List, Dict , Union
+from typing import Tuple, Optional , List , Union
 
 
 class mysql_operation:
@@ -118,8 +118,8 @@ class mysql_operation:
             sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
             # Extract the values for each record as tuples
-            values = [tuple(data.values()) for data in record]
-            cursor.executemany(sql, values)
+            values_list: List[Tuple] = [tuple(data.values()) for data in record]
+            cursor.executemany(sql, values_list)
             
         elif isinstance(record, dict):
             # Prepare SQL for inserting a single record
@@ -128,8 +128,8 @@ class mysql_operation:
             sql = f"INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
             # Extract the values as a tuple
-            values = tuple(record.values())
-            cursor.execute(sql, values)
+            single_value_tuple: Tuple = tuple(record.values())  # This is now explicitly a Tuple
+            cursor.execute(sql, single_value_tuple)
         else:
             raise TypeError("Record must be a dictionary or a list of dictionaries")
 
