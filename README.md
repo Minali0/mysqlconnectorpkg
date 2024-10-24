@@ -106,7 +106,7 @@ mysql_connector.insert_single_record(
 
 ```bash
 mysql_connector.insert_multiple_records(
-    record= [record:dict],
+    records= [record:dict],
     table_name= "<table_name>", 
     database_name= '<database_name>'
     )
