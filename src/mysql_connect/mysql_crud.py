@@ -126,11 +126,14 @@ class mysql_operation:
         connection.close()
     
     @ensure_annotations 
-    def insert_multiple_records(self, records: List[dict], table_name: Optional[str] = None,database_name:Optional[str] = None):
+    def insert_multiple_records(self, records: list, table_name: Optional[str] = None, database_name: Optional[str] = None):
         """Insert multiple records into the specified MySQL table."""
         if not records:
             print("No records provided to insert.")
             return
+
+        if not isinstance(records, list) or not all(isinstance(record, dict) for record in records):
+            raise TypeError("Records must be a list of dictionaries.")
 
         # Connect to MySQL
         connection = mysql.connector.connect(
@@ -158,7 +161,7 @@ class mysql_operation:
         # Close the cursor and connection
         cursor.close()
         connection.close()
-
+        
     @ensure_annotations 
     def bulk_insert(self, datafile: str, table_name: Optional[str] = None, database_name:Optional[str] = None,unique_field: Optional[str] = None):
         """Bulk insert records from a CSV or Excel file."""
