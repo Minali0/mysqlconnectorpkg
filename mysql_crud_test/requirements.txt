@@ -1,0 +1,2 @@
+mysql-crud-automation==0.0.11   
+
